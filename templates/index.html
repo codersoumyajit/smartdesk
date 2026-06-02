@@ -1,0 +1,2667 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>SmartDesk — Enterprise Support</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      :root {
+        --sidebar-w: 240px;
+        --topbar-h: 58px;
+        --bg: #f4f5f7;
+        --surface: #ffffff;
+        --border: #e8eaed;
+        --border-strong: #d1d5db;
+        --text-primary: #0f1117;
+        --text-secondary: #6b7280;
+        --text-muted: #9ca3af;
+        --accent: #2563eb;
+        --accent-light: #eff6ff;
+        --accent-hover: #1d4ed8;
+        --sidebar-bg: #0f1117;
+        --sidebar-text: #9ca3af;
+        --sidebar-active: #ffffff;
+        --sidebar-active-bg: rgba(255, 255, 255, 0.08);
+        --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
+        --danger: #ef4444;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --radius-sm: 6px;
+        --radius-md: 10px;
+        --radius-lg: 14px;
+        --shadow-sm:
+          0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-md:
+          0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+        --shadow-lg:
+          0 16px 40px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: "DM Sans", system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text-primary);
+        font-size: 14px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ── TOPBAR ── */
+      .topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        height: var(--topbar-h);
+        background: var(--sidebar-bg);
+        display: flex;
+        align-items: center;
+        padding: 0 20px 0 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        box-sizing: border-box;
+      }
+      .topbar-brand {
+        width: var(--sidebar-w);
+        min-width: var(--sidebar-w);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 20px;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+        height: 100%;
+        flex-shrink: 0;
+      }
+      .brand-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      .brand-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+        letter-spacing: -0.3px;
+      }
+      .brand-name span {
+        color: #60a5fa;
+      }
+      .topbar-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-right: 4px;
+      }
+      .topbar-divider {
+        width: 1px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+      #user-badge {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+        font-family: "DM Mono", monospace;
+        background: rgba(255, 255, 255, 0.07);
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .notif-btn {
+        position: relative;
+        cursor: pointer;
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 16px;
+        transition: background 0.15s;
+        border: none;
+        background: transparent;
+      }
+      .notif-btn:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: #fff;
+      }
+      #notif-count {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        background: var(--danger);
+        color: white;
+        border-radius: 50%;
+        font-size: 9px;
+        font-weight: 600;
+        width: 16px;
+        height: 16px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-family: "DM Mono", monospace;
+      }
+      .btn-logout {
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        background: rgba(239, 68, 68, 0.15);
+        color: #fca5a5;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        font-family: inherit;
+        transition: all 0.15s;
+      }
+      .btn-logout:hover {
+        background: rgba(239, 68, 68, 0.25);
+        color: #fff;
+      }
+
+      /* ── LAYOUT ── */
+      .layout {
+        display: block;
+        min-height: 100vh;
+        padding-top: var(--topbar-h);
+      }
+
+      /* ── SIDEBAR ── */
+      .sidebar {
+        position: fixed;
+        top: var(--topbar-h);
+        left: 0;
+        bottom: 0;
+        width: var(--sidebar-w);
+        background: var(--sidebar-bg);
+        padding: 20px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        overflow-y: auto;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .nav-section-label {
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        color: rgba(255, 255, 255, 0.25);
+        text-transform: uppercase;
+        padding: 16px 10px 6px;
+        margin-top: 4px;
+      }
+      .nav-section-label:first-child {
+        padding-top: 4px;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 400;
+        color: var(--sidebar-text);
+        transition: all 0.15s;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+      }
+      .nav-item:hover {
+        background: var(--sidebar-hover-bg);
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .nav-item.active {
+        background: var(--sidebar-active-bg);
+        color: var(--sidebar-active);
+        font-weight: 500;
+      }
+      .nav-item.active .nav-icon {
+        color: #60a5fa;
+      }
+      .nav-icon {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .sidebar-footer {
+        margin-top: auto;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .sidebar-version {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.2);
+        padding: 8px 10px;
+        font-family: "DM Mono", monospace;
+      }
+
+      /* ── MAIN CONTENT ── */
+      .main {
+        padding: 28px 32px;
+        min-width: 0;
+        margin-left: var(--sidebar-w);
+      }
+      .page {
+        display: none;
+      }
+      .page.active {
+        display: block;
+      }
+
+      .page-header {
+        margin-bottom: 24px;
+      }
+      .page-header h1 {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.4px;
+        color: var(--text-primary);
+      }
+      .page-header p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-top: 3px;
+      }
+
+      /* ── STAT CARDS ── */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .stat {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 20px 22px;
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+        transition: box-shadow 0.2s;
+      }
+      .stat:hover {
+        box-shadow: var(--shadow-md);
+      }
+      .stat-accent {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      }
+      .stat-accent.blue {
+        background: linear-gradient(90deg, #2563eb, #60a5fa);
+      }
+      .stat-accent.amber {
+        background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      }
+      .stat-accent.green {
+        background: linear-gradient(90deg, #10b981, #34d399);
+      }
+      .stat-accent.red {
+        background: linear-gradient(90deg, #ef4444, #f87171);
+      }
+      .stat-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .stat-label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+      }
+      .stat-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+      .stat-icon.blue {
+        background: #eff6ff;
+      }
+      .stat-icon.amber {
+        background: #fffbeb;
+      }
+      .stat-icon.green {
+        background: #ecfdf5;
+      }
+      .stat-icon.red {
+        background: #fef2f2;
+      }
+      .stat-num {
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: -1px;
+        line-height: 1;
+        color: var(--text-primary);
+      }
+      .stat-sub {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 6px;
+      }
+
+      /* ── CARDS ── */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 20px;
+      }
+      .card-header {
+        padding: 18px 22px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+      .card-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .card-sub {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 1px;
+      }
+      .card-body {
+        padding: 0 22px 20px;
+      }
+      .card-body-pad {
+        padding: 20px 22px;
+      }
+
+      /* ── CHARTS ── */
+      .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+      }
+      .chart-wrap {
+        position: relative;
+        height: 200px;
+      }
+
+      /* ── TABLE ── */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      thead tr {
+        border-bottom: 1px solid var(--border);
+      }
+      th {
+        text-align: left;
+        padding: 10px 14px;
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        white-space: nowrap;
+      }
+      td {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: middle;
+        color: var(--text-primary);
+      }
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+      tbody tr {
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+      tbody tr:hover td {
+        background: #f9fafb;
+      }
+      .td-id {
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+      .td-title {
+        font-weight: 500;
+      }
+      .td-date {
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      /* ── BADGES ── */
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 1.4;
+      }
+      .badge::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .b-open {
+        background: #fffbeb;
+        color: #92400e;
+      }
+      .b-open::before {
+        background: #f59e0b;
+      }
+      .b-progress {
+        background: #eff6ff;
+        color: #1e40af;
+      }
+      .b-progress::before {
+        background: #3b82f6;
+      }
+      .b-resolved {
+        background: #ecfdf5;
+        color: #065f46;
+      }
+      .b-resolved::before {
+        background: #10b981;
+      }
+      .b-closed {
+        background: #f9fafb;
+        color: #4b5563;
+      }
+      .b-closed::before {
+        background: #9ca3af;
+      }
+      .b-critical {
+        background: #fef2f2;
+        color: #991b1b;
+      }
+      .b-critical::before {
+        background: #ef4444;
+      }
+      .b-high {
+        background: #fff7ed;
+        color: #9a3412;
+      }
+      .b-high::before {
+        background: #f97316;
+      }
+      .b-medium {
+        background: #eff6ff;
+        color: #1e40af;
+      }
+      .b-medium::before {
+        background: #3b82f6;
+      }
+      .b-low {
+        background: #ecfdf5;
+        color: #065f46;
+      }
+      .b-low::before {
+        background: #10b981;
+      }
+
+      /* ── TOOLBAR ── */
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .search-wrap {
+        position: relative;
+      }
+      .search-wrap .search-icon {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        color: var(--text-muted);
+        pointer-events: none;
+      }
+      .search-input {
+        padding: 8px 12px 8px 32px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-family: inherit;
+        background: var(--surface);
+        color: var(--text-primary);
+        width: 260px;
+        transition: border-color 0.15s;
+      }
+      .search-input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .filter-select {
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-family: inherit;
+        background: var(--surface);
+        color: var(--text-primary);
+        cursor: pointer;
+      }
+      .filter-select:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      /* ── FORMS ── */
+      .form-section {
+        padding: 22px;
+      }
+      .form-section + .form-section {
+        border-top: 1px solid var(--border);
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-group:last-child {
+        margin-bottom: 0;
+      }
+      .form-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-bottom: 6px;
+        letter-spacing: 0.02em;
+      }
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-family: inherit;
+        background: var(--surface);
+        color: var(--text-primary);
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+      }
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.6;
+      }
+
+      /* ── BUTTONS ── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 18px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--surface);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.15s;
+        color: var(--text-primary);
+        line-height: 1;
+      }
+      .btn:hover {
+        background: #f9fafb;
+        border-color: var(--border-strong);
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3);
+      }
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+      }
+      .btn-danger {
+        background: #fff;
+        color: var(--danger);
+        border-color: #fecaca;
+      }
+      .btn-danger:hover {
+        background: #fef2f2;
+      }
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      /* ── ALERTS ── */
+      .alert {
+        padding: 12px 16px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        margin-bottom: 16px;
+        display: none;
+        border: 1px solid;
+      }
+      .alert-success {
+        background: #ecfdf5;
+        color: #065f46;
+        border-color: #a7f3d0;
+      }
+      .alert-error {
+        background: #fef2f2;
+        color: #991b1b;
+        border-color: #fecaca;
+      }
+
+      /* ── MODAL ── */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 200;
+        backdrop-filter: blur(2px);
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        width: 540px;
+        max-width: 95vw;
+        max-height: 88vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border);
+      }
+      .modal-head {
+        padding: 20px 22px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        background: var(--surface);
+        z-index: 1;
+      }
+      .modal-head-left {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .modal-head h3 {
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .modal-head-sub {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+      .modal-close {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: background 0.15s;
+      }
+      .modal-close:hover {
+        background: #f3f4f6;
+        color: var(--text-primary);
+      }
+      .modal-body {
+        padding: 22px;
+      }
+      .modal-footer {
+        padding: 16px 22px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        background: #fafafa;
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+      }
+      .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+      .field {
+      }
+      .field-key {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 4px;
+      }
+      .field-val {
+        font-size: 13px;
+        color: var(--text-primary);
+        line-height: 1.5;
+      }
+      .field-full {
+        grid-column: 1 / -1;
+      }
+      .ai-box {
+        background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+        border: 1px solid #bfdbfe;
+        border-radius: var(--radius-md);
+        padding: 14px 16px;
+        margin-bottom: 18px;
+      }
+      .ai-box-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+      .ai-box-head strong {
+        font-size: 12px;
+        font-weight: 600;
+        color: #1e40af;
+      }
+      .ai-box-badge {
+        font-size: 10px;
+        background: #dbeafe;
+        color: #1e40af;
+        padding: 2px 7px;
+        border-radius: 10px;
+        font-weight: 500;
+      }
+      .ai-box p {
+        font-size: 13px;
+        color: #1e3a8a;
+        line-height: 1.6;
+      }
+      .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 16px 0;
+      }
+
+      /* ── NOTIFICATION PANEL ── */
+      .notif-panel {
+        display: none;
+        position: fixed;
+        top: 66px;
+        right: 16px;
+        width: 320px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        max-height: 420px;
+        overflow-y: auto;
+      }
+      .notif-header {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .notif-item {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        transition: background 0.1s;
+      }
+      .notif-item:hover {
+        background: #f9fafb;
+      }
+      .notif-item:last-child {
+        border-bottom: none;
+      }
+      .notif-text {
+        font-size: 13px;
+        color: var(--text-primary);
+      }
+      .notif-time {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 3px;
+        font-family: "DM Mono", monospace;
+      }
+      .notif-empty {
+        padding: 28px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      /* ── LOGIN ── */
+      .login-screen {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #0f1117 0%, #1e2433 100%);
+      }
+      .login-card {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        width: 400px;
+        padding: 40px;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border);
+      }
+      .login-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 28px;
+      }
+      .login-logo-icon {
+        width: 38px;
+        height: 38px;
+        background: var(--accent);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .login-logo-text {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -0.4px;
+      }
+      .login-logo-text span {
+        color: var(--accent);
+      }
+      .login-title {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        letter-spacing: -0.4px;
+      }
+      .login-sub {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-bottom: 28px;
+      }
+      .login-footer {
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+      }
+      .login-hint {
+        font-size: 11px;
+        color: var(--text-muted);
+        text-align: center;
+        font-family: "DM Mono", monospace;
+        line-height: 1.8;
+      }
+      .login-divider {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 16px 0;
+      }
+      .login-divider span {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .login-divider em {
+        font-size: 11px;
+        color: var(--text-muted);
+        font-style: normal;
+      }
+
+      /* ── TRACK PAGE ── */
+      .empty-state {
+        padding: 48px 22px;
+        text-align: center;
+      }
+      .empty-state-icon {
+        font-size: 36px;
+        margin-bottom: 12px;
+      }
+      .empty-state h3 {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .empty-state p {
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+
+      /* ── SUBMIT PAGE ── */
+      .submit-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 20px;
+        align-items: start;
+      }
+      .info-card {
+        background: linear-gradient(135deg, #0f1117, #1e2433);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        color: rgba(255, 255, 255, 0.8);
+      }
+      .info-card h3 {
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 6px;
+      }
+      .info-card p {
+        font-size: 13px;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.55);
+        margin-bottom: 20px;
+      }
+      .info-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .info-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .info-list li span:first-child {
+        width: 20px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      /* ── CHAT ── */
+      .chat-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 260px;
+        gap: 20px;
+        align-items: start;
+      }
+      .chat-msg {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .ai-msg {
+        flex-direction: row;
+      }
+      .user-msg {
+        flex-direction: row-reverse;
+      }
+      .msg-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      .ai-msg .msg-avatar {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+      }
+      .user-msg .msg-avatar {
+        background: var(--accent);
+        color: #fff;
+      }
+      .msg-bubble {
+        max-width: 78%;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+      .ai-bubble {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0 12px 12px 12px;
+      }
+      .ai-bubble strong {
+        display: block;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 5px;
+      }
+      .ai-bubble p {
+        margin: 0;
+        color: var(--text-primary);
+      }
+      .user-bubble {
+        background: var(--accent);
+        color: #fff;
+        border-radius: 12px 0 12px 12px;
+      }
+      .typing-bubble {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        padding: 10px 16px;
+      }
+      .typing-bubble span {
+        width: 6px;
+        height: 6px;
+        background: #94a3b8;
+        border-radius: 50%;
+        animation: typingDot 1.2s infinite;
+      }
+      .typing-bubble span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-bubble span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes typingDot {
+        0%,
+        60%,
+        100% {
+          transform: translateY(0);
+        }
+        30% {
+          transform: translateY(-5px);
+        }
+      }
+      .ticket-raised-bubble {
+        background: #ecfdf5;
+        border: 1px solid #a7f3d0;
+        border-radius: 0 12px 12px 12px;
+        padding: 10px 14px;
+        font-size: 13px;
+        color: #065f46;
+      }
+      .ticket-raised-bubble strong {
+        display: block;
+        margin-bottom: 3px;
+        font-size: 12px;
+      }
+      .quick-chip {
+        padding: 6px 12px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background: var(--surface);
+        font-size: 12px;
+        cursor: pointer;
+        font-family: inherit;
+        color: var(--text-secondary);
+        transition: all 0.15s;
+      }
+      .quick-chip:hover {
+        background: var(--accent-light);
+        border-color: #bfdbfe;
+        color: var(--accent);
+      }
+      .chat-sidebar-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 18px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 16px;
+      }
+      .chat-sidebar-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 12px;
+      }
+      .chat-status-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        border: 1px solid var(--border);
+        background: #f9fafb;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+      }
+
+      /* ── SCROLLBAR ── */
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════════════════ LOGIN ═══════════════════════ -->
+    <div class="login-screen" id="login-screen">
+      <div class="login-card">
+        <div class="login-logo">
+          <div class="login-logo-icon">🎫</div>
+          <div class="login-logo-text">Smart<span>Desk</span></div>
+        </div>
+        <h1 class="login-title">Welcome back</h1>
+        <p class="login-sub">Sign in to your enterprise support portal</p>
+
+        <div class="alert alert-error" id="login-error"></div>
+
+        <div class="form-group">
+          <label>Employee ID</label>
+          <input
+            id="login-id"
+            placeholder="e.g. EMP001"
+            autocomplete="username"
+          />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+          />
+        </div>
+
+        <button
+          class="btn btn-primary"
+          style="width: 100%; justify-content: center; padding: 11px"
+          onclick="loginUser()"
+        >
+          Sign in →
+        </button>
+
+        <div class="login-divider"><span></span><em>or</em><span></span></div>
+
+        <button
+          class="btn"
+          style="width: 100%; justify-content: center; padding: 11px"
+          onclick="signupUser()"
+        >
+          Create account
+        </button>
+
+        <div class="login-footer">
+          <div class="login-hint">
+            Admin: EMP001 / admin123<br />
+            User &nbsp;: EMP002 / user123
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════ TOPBAR ═══════════════════════ -->
+    <div class="topbar" id="main-topbar" style="display: none">
+      <div class="topbar-brand">
+        <div class="brand-icon">🎫</div>
+        <div class="brand-name">Smart<span>Desk</span></div>
+      </div>
+      <div class="topbar-right">
+        <span id="user-badge" style="display: none"></span>
+        <div class="topbar-divider"></div>
+        <button
+          class="notif-btn"
+          onclick="toggleNotifications()"
+          title="Notifications"
+        >
+          🔔
+          <span id="notif-count"></span>
+        </button>
+        <button
+          id="logout-btn"
+          class="btn-logout"
+          style="display: none"
+          onclick="logoutUser()"
+        >
+          Sign out
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════ NOTIFICATION PANEL ═══════════════════════ -->
+    <div class="notif-panel" id="notification-panel">
+      <div class="notif-header">
+        Notifications
+        <span
+          id="notif-count-label"
+          style="font-size: 11px; color: var(--text-muted); font-weight: 400"
+        ></span>
+      </div>
+      <div id="notification-list"></div>
+    </div>
+
+    <!-- ═══════════════════════ MAIN LAYOUT ═══════════════════════ -->
+    <div class="layout" id="main-layout" style="display: none">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="nav-section-label">Overview</div>
+        <button
+          class="nav-item active"
+          id="nav-dashboard"
+          onclick="nav('dashboard')"
+        >
+          <span class="nav-icon">📊</span> Dashboard
+        </button>
+        <button class="nav-item" id="nav-tickets" onclick="nav('tickets')">
+          <span class="nav-icon">🎫</span> All Tickets
+        </button>
+
+        <div class="nav-section-label">Support</div>
+        <button class="nav-item" id="nav-submit" onclick="nav('submit')">
+          <span class="nav-icon">➕</span> Submit Issue
+        </button>
+        <button class="nav-item" id="nav-track" onclick="nav('track')">
+          <span class="nav-icon">🔍</span> Track Mine
+        </button>
+        <button class="nav-item" id="nav-chatbot" onclick="nav('chatbot')">
+          <span class="nav-icon">🤖</span> AI Support Chat
+        </button>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-version">SmartDesk v2.0</div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main">
+        <!-- ──────── DASHBOARD ──────── -->
+        <div class="page active" id="page-dashboard">
+          <div class="page-header">
+            <h1>Dashboard</h1>
+            <p>Real-time overview of all support activity</p>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-accent blue"></div>
+              <div class="stat-top">
+                <span class="stat-label">Total Tickets</span>
+                <div class="stat-icon blue">🎫</div>
+              </div>
+              <div class="stat-num" id="s-total">—</div>
+              <div class="stat-sub">All time</div>
+            </div>
+            <div class="stat">
+              <div class="stat-accent amber"></div>
+              <div class="stat-top">
+                <span class="stat-label">Open</span>
+                <div class="stat-icon amber">🟡</div>
+              </div>
+              <div class="stat-num" id="s-open">—</div>
+              <div class="stat-sub">Needs attention</div>
+            </div>
+            <div class="stat">
+              <div class="stat-accent green"></div>
+              <div class="stat-top">
+                <span class="stat-label">Resolved</span>
+                <div class="stat-icon green">✅</div>
+              </div>
+              <div class="stat-num" id="s-resolved">—</div>
+              <div class="stat-sub">Closed + resolved</div>
+            </div>
+            <div class="stat">
+              <div class="stat-accent red"></div>
+              <div class="stat-top">
+                <span class="stat-label">Critical</span>
+                <div class="stat-icon red">🔴</div>
+              </div>
+              <div class="stat-num" id="s-critical">—</div>
+              <div class="stat-sub">Highest priority</div>
+            </div>
+          </div>
+
+          <!-- Charts -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Analytics</div>
+                <div class="card-sub">
+                  Tickets by department, priority, and status
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="charts-grid">
+                <div>
+                  <div class="chart-wrap"><canvas id="deptChart"></canvas></div>
+                </div>
+                <div>
+                  <div class="chart-wrap">
+                    <canvas id="priorityChart"></canvas>
+                  </div>
+                </div>
+                <div>
+                  <div class="chart-wrap">
+                    <canvas id="statusChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent tickets -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Recent Tickets</div>
+                <div class="card-sub">Latest 8 submissions</div>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Department</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="dash-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ──────── ALL TICKETS ──────── -->
+        <div class="page" id="page-tickets">
+          <div class="page-header">
+            <h1>All Tickets</h1>
+            <p>Search, filter, and update every issue</p>
+          </div>
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="search-icon">🔍</span>
+              <input
+                class="search-input"
+                id="search"
+                placeholder="Search tickets, names, departments…"
+                oninput="renderTable()"
+              />
+            </div>
+            <select
+              class="filter-select"
+              id="f-status"
+              onchange="renderTable()"
+            >
+              <option value="">All statuses</option>
+              <option>Open</option>
+              <option>In progress</option>
+              <option>Resolved</option>
+              <option>Closed</option>
+            </select>
+            <select class="filter-select" id="f-dept" onchange="renderTable()">
+              <option value="">All departments</option>
+              <option>Engineering</option>
+              <option>HR</option>
+              <option>IT</option>
+              <option>Finance</option>
+              <option>Operations</option>
+              <option>Marketing</option>
+            </select>
+            <span
+              id="filter-count"
+              style="
+                font-size: 12px;
+                color: var(--text-muted);
+                margin-left: 4px;
+              "
+            ></span>
+          </div>
+          <div class="card">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Submitted by</th>
+                  <th>Department</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="all-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ──────── SUBMIT ISSUE ──────── -->
+        <div class="page" id="page-submit">
+          <div class="page-header">
+            <h1>Submit an Issue</h1>
+            <p>
+              Describe your problem and our AI will categorize and route it
+              automatically
+            </p>
+          </div>
+          <div class="alert alert-success" id="sub-ok"></div>
+          <div class="alert alert-error" id="sub-err"></div>
+          <div class="submit-layout">
+            <div class="card" style="margin-bottom: 0">
+              <div class="form-section">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Department</label>
+                    <select id="f-dept-sub">
+                      <option>Engineering</option>
+                      <option>HR</option>
+                      <option>IT</option>
+                      <option>Finance</option>
+                      <option>Operations</option>
+                      <option>Marketing</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Priority</label>
+                    <select id="f-priority">
+                      <option>Low</option>
+                      <option selected>Medium</option>
+                      <option>High</option>
+                      <option>Critical</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Issue title</label>
+                  <input
+                    id="f-title"
+                    placeholder="Short, clear summary of the problem"
+                  />
+                </div>
+                <div class="form-group" style="margin-bottom: 0">
+                  <label>Description</label>
+                  <textarea
+                    id="f-desc"
+                    placeholder="Provide as much detail as possible — steps to reproduce, error messages, affected systems…"
+                  ></textarea>
+                </div>
+              </div>
+              <div
+                class="form-section"
+                style="display: flex; gap: 10px; align-items: center"
+              >
+                <button class="btn btn-primary" onclick="submitTicket()">
+                  Submit Ticket →
+                </button>
+                <span style="font-size: 12px; color: var(--text-muted)"
+                  >AI will auto-analyze and assign your ticket</span
+                >
+              </div>
+            </div>
+            <div>
+              <div class="info-card">
+                <h3>How it works</h3>
+                <p>
+                  Our AI reads your description and handles routing
+                  automatically.
+                </p>
+                <ul class="info-list">
+                  <li>
+                    <span>1</span
+                    ><span>Your ticket is analyzed by Gemini AI</span>
+                  </li>
+                  <li>
+                    <span>2</span
+                    ><span>Category and team are assigned automatically</span>
+                  </li>
+                  <li>
+                    <span>3</span
+                    ><span>Critical issues are escalated immediately</span>
+                  </li>
+                  <li>
+                    <span>4</span
+                    ><span>You can track progress under Track Mine</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ──────── TRACK MINE ──────── -->
+        <div class="page" id="page-track">
+          <div class="page-header">
+            <h1>Track My Tickets</h1>
+            <p>All issues submitted under your account</p>
+          </div>
+          <div class="card">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Department</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="track-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ──────── AI SUPPORT CHAT ──────── -->
+        <div class="page" id="page-chatbot">
+          <div class="page-header">
+            <h1>AI Support Chat</h1>
+            <p>
+              Describe your problem — AI will try to resolve it, or raise a
+              ticket automatically
+            </p>
+          </div>
+
+          <div class="chat-layout">
+            <!-- Chat panel -->
+            <div>
+              <div
+                class="card"
+                style="padding: 0; overflow: hidden; margin-bottom: 12px"
+              >
+                <div
+                  id="chat-box"
+                  style="
+                    height: 480px;
+                    overflow-y: auto;
+                    padding: 20px;
+                    background: #f9fafb;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 14px;
+                  "
+                >
+                  <div class="chat-msg ai-msg">
+                    <div class="msg-avatar">🤖</div>
+                    <div class="msg-bubble ai-bubble">
+                      <strong>SmartDesk AI</strong>
+                      <p>
+                        Hi! I am your support assistant. Describe what is going
+                        wrong and I will try to help you fix it. If I cannot
+                        resolve it, I will raise a support ticket automatically.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  id="ticket-banner"
+                  style="
+                    display: none;
+                    padding: 12px 20px;
+                    background: #ecfdf5;
+                    border-top: 1px solid #a7f3d0;
+                    font-size: 13px;
+                    color: #065f46;
+                    align-items: center;
+                    gap: 10px;
+                  "
+                >
+                  ✅ <span id="ticket-banner-text"></span>
+                </div>
+                <div
+                  style="
+                    padding: 12px 14px;
+                    border-top: 1px solid var(--border);
+                    display: flex;
+                    gap: 10px;
+                    align-items: flex-end;
+                    background: var(--surface);
+                  "
+                >
+                  <textarea
+                    id="chat-input"
+                    placeholder="Describe your issue… (Enter to send, Shift+Enter for new line)"
+                    rows="2"
+                    style="
+                      flex: 1;
+                      padding: 9px 12px;
+                      border: 1px solid var(--border);
+                      border-radius: var(--radius-sm);
+                      font-size: 13px;
+                      font-family: inherit;
+                      resize: none;
+                      line-height: 1.5;
+                      transition: border-color 0.15s;
+                    "
+                    onkeydown="chatKeydown(event)"
+                    onfocus="this.style.borderColor = 'var(--accent)'"
+                    onblur="this.style.borderColor = 'var(--border)'"
+                  ></textarea>
+                  <div style="display: flex; flex-direction: column; gap: 6px">
+                    <button
+                      class="btn btn-primary btn-sm"
+                      id="send-btn"
+                      onclick="sendSupportMessage()"
+                      style="padding: 9px 16px"
+                    >
+                      Send
+                    </button>
+                    <button
+                      class="btn btn-sm"
+                      onclick="resetChat()"
+                      style="font-size: 11px; color: var(--text-muted)"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick prompts -->
+              <div
+                id="quick-prompts"
+                style="
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                  margin-top: 4px;
+                "
+              >
+                <span
+                  style="
+                    font-size: 11px;
+                    color: var(--text-muted);
+                    align-self: center;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                    font-weight: 500;
+                  "
+                  >Try:</span
+                >
+                <button
+                  class="quick-chip"
+                  onclick="useQuickPrompt('My laptop won t turn on')"
+                >
+                  💻 Laptop won't start
+                </button>
+                <button
+                  class="quick-chip"
+                  onclick="useQuickPrompt('I can t access my email account')"
+                >
+                  📧 Email access issue
+                </button>
+                <button
+                  class="quick-chip"
+                  onclick="useQuickPrompt('I need to request leave')"
+                >
+                  🗓️ Request leave
+                </button>
+                <button
+                  class="quick-chip"
+                  onclick="useQuickPrompt('My salary was incorrect this month')"
+                >
+                  💰 Salary issue
+                </button>
+                <button
+                  class="quick-chip"
+                  onclick="
+                    useQuickPrompt('Software keeps crashing on my computer')
+                  "
+                >
+                  ⚠️ App crashing
+                </button>
+              </div>
+            </div>
+
+            <!-- Chat sidebar -->
+            <div>
+              <div class="chat-sidebar-card">
+                <div class="chat-sidebar-title">Status</div>
+                <div id="chat-status-area">
+                  <div class="chat-status-pill">
+                    💬 <span>Start chatting to get help</span>
+                  </div>
+                </div>
+                <button
+                  id="chat-raise-btn"
+                  class="btn btn-primary"
+                  style="
+                    display: none;
+                    width: 100%;
+                    justify-content: center;
+                    margin-top: 10px;
+                  "
+                  onclick="raiseTicketManually()"
+                >
+                  🎫 Raise Ticket
+                </button>
+              </div>
+
+              <div class="chat-sidebar-card">
+                <div class="chat-sidebar-title">How it works</div>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  <div
+                    style="
+                      display: flex;
+                      gap: 10px;
+                      font-size: 12px;
+                      color: var(--text-secondary);
+                    "
+                  >
+                    <span
+                      style="
+                        width: 22px;
+                        height: 22px;
+                        background: var(--accent-light);
+                        border-radius: 5px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 11px;
+                        flex-shrink: 0;
+                      "
+                      >1</span
+                    >
+                    <span>Describe your problem in detail</span>
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 10px;
+                      font-size: 12px;
+                      color: var(--text-secondary);
+                    "
+                  >
+                    <span
+                      style="
+                        width: 22px;
+                        height: 22px;
+                        background: var(--accent-light);
+                        border-radius: 5px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 11px;
+                        flex-shrink: 0;
+                      "
+                      >2</span
+                    >
+                    <span>AI attempts to resolve it instantly</span>
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 10px;
+                      font-size: 12px;
+                      color: var(--text-secondary);
+                    "
+                  >
+                    <span
+                      style="
+                        width: 22px;
+                        height: 22px;
+                        background: var(--accent-light);
+                        border-radius: 5px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 11px;
+                        flex-shrink: 0;
+                      "
+                      >3</span
+                    >
+                    <span>If unresolved, a ticket is raised automatically</span>
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      gap: 10px;
+                      font-size: 12px;
+                      color: var(--text-secondary);
+                    "
+                  >
+                    <span
+                      style="
+                        width: 22px;
+                        height: 22px;
+                        background: var(--accent-light);
+                        border-radius: 5px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 11px;
+                        flex-shrink: 0;
+                      "
+                      >4</span
+                    >
+                    <span>Track your ticket under Track Mine</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- ═══════════════════════ TICKET MODAL ═══════════════════════ -->
+    <div class="modal-overlay" id="modal">
+      <div class="modal">
+        <div class="modal-head">
+          <div class="modal-head-left">
+            <h3 id="m-title">Ticket detail</h3>
+            <span class="modal-head-sub" id="m-date-sub"></span>
+          </div>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="ai-box">
+            <div class="ai-box-head">
+              <strong>🤖 AI Analysis</strong>
+              <span class="ai-box-badge">Gemini</span>
+            </div>
+            <p id="m-summary">
+              Auto-categorized and prioritized by SmartDesk AI.
+            </p>
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <div class="field-key">Submitted by</div>
+              <div class="field-val" id="m-name"></div>
+            </div>
+            <div class="field">
+              <div class="field-key">Department</div>
+              <div class="field-val" id="m-dept"></div>
+            </div>
+            <div class="field">
+              <div class="field-key">Category</div>
+              <div class="field-val" id="m-cat"></div>
+            </div>
+            <div class="field">
+              <div class="field-key">Assigned Team</div>
+              <div class="field-val" id="m-team"></div>
+            </div>
+            <div class="field field-full">
+              <div class="field-key">Description</div>
+              <div
+                class="field-val"
+                id="m-desc"
+                style="
+                  background: #f9fafb;
+                  padding: 10px 12px;
+                  border-radius: 6px;
+                  border: 1px solid var(--border);
+                  line-height: 1.7;
+                  max-height: 120px;
+                  overflow-y: auto;
+                "
+              ></div>
+            </div>
+          </div>
+
+          <div id="status-update-section" style="display: none">
+            <div class="divider"></div>
+            <div class="form-group" style="margin-bottom: 0">
+              <label>Update status</label>
+              <select id="m-status">
+                <option>Open</option>
+                <option>In progress</option>
+                <option>Resolved</option>
+                <option>Closed</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-sm" onclick="closeModal()">Close</button>
+          <button
+            id="save-status-btn"
+            class="btn btn-primary btn-sm"
+            style="display: none"
+            onclick="saveStatus()"
+          >
+            Save status →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ── State ──
+      let allTickets = [],
+        notifications = [],
+        currentId = null;
+      let currentRole = "",
+        currentEmployeeId = "";
+      let deptChartInstance, priorityChartInstance, statusChartInstance;
+      let chatConversation = [],
+        lastSuggestion = {};
+
+      // ── Auth ──
+      async function loginUser() {
+        const employee_id = document.getElementById("login-id").value.trim();
+        const password = document.getElementById("login-password").value.trim();
+        const errBox = document.getElementById("login-error");
+        errBox.style.display = "none";
+        if (!employee_id || !password) {
+          errBox.textContent = "Enter Employee ID and Password.";
+          errBox.style.display = "block";
+          return;
+        }
+        const res = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ employee_id, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          errBox.textContent = data.message;
+          errBox.style.display = "block";
+          return;
+        }
+        currentRole = data.role;
+        currentEmployeeId = data.employee_id;
+        bootstrapUI();
+        await loadTickets();
+      }
+
+      async function signupUser() {
+        const employee_id = document.getElementById("login-id").value.trim();
+        const password = document.getElementById("login-password").value.trim();
+        if (!employee_id || !password) {
+          alert("Fill all fields.");
+          return;
+        }
+        const res = await fetch("/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ employee_id, password }),
+        });
+        const data = await res.json();
+        alert(data.message);
+      }
+
+      async function logoutUser() {
+        await fetch("/logout", { method: "POST" });
+        currentRole = "";
+        currentEmployeeId = "";
+        allTickets = [];
+        document.getElementById("main-layout").style.display = "none";
+        document.getElementById("main-topbar").style.display = "none";
+        document.getElementById("login-screen").style.display = "flex";
+        document.getElementById("logout-btn").style.display = "none";
+        document.getElementById("user-badge").style.display = "none";
+        document.getElementById("login-id").value = "";
+        document.getElementById("login-password").value = "";
+        document.getElementById("login-error").style.display = "none";
+      }
+
+      async function checkExistingSession() {
+        const res = await fetch("/me");
+        if (!res.ok) return;
+        const data = await res.json();
+        currentRole = data.role;
+        currentEmployeeId = data.employee_id;
+        bootstrapUI();
+        await loadTickets();
+      }
+
+      function bootstrapUI() {
+        document.getElementById("login-screen").style.display = "none";
+        document.getElementById("main-layout").style.display = "grid";
+        document.getElementById("main-topbar").style.display = "flex";
+        document.getElementById("logout-btn").style.display = "inline-flex";
+        document.getElementById("user-badge").textContent = currentEmployeeId;
+        document.getElementById("user-badge").style.display = "inline-block";
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((n) => n.classList.remove("active"));
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        if (currentRole === "admin") {
+          document.getElementById("nav-dashboard").style.display = "flex";
+          document.getElementById("nav-tickets").style.display = "flex";
+          document.getElementById("page-dashboard").classList.add("active");
+          document.getElementById("nav-dashboard").classList.add("active");
+          document.getElementById("status-update-section").style.display =
+            "block";
+          document.getElementById("save-status-btn").style.display =
+            "inline-flex";
+        } else {
+          document.getElementById("nav-dashboard").style.display = "none";
+          document.getElementById("nav-tickets").style.display = "none";
+          document.getElementById("page-track").classList.add("active");
+          document.getElementById("nav-track").classList.add("active");
+          document.getElementById("status-update-section").style.display =
+            "none";
+          document.getElementById("save-status-btn").style.display = "none";
+        }
+      }
+
+      // ── Navigation ──
+      function nav(page) {
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((n) => n.classList.remove("active"));
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById("nav-" + page).classList.add("active");
+        document.getElementById("page-" + page).classList.add("active");
+        if (page === "track") renderTrack();
+      }
+
+      // ── Data ──
+      async function loadTickets() {
+        try {
+          const res = await fetch("/tickets");
+          if (!res.ok) throw new Error();
+          allTickets = await res.json();
+          renderDash();
+          renderTable();
+          renderTrack();
+          renderCharts();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      // ── Badges ──
+      function statusBadge(s) {
+        const m = {
+          Open: "b-open",
+          "In progress": "b-progress",
+          Resolved: "b-resolved",
+          Closed: "b-closed",
+        };
+        return `<span class="badge ${m[s] || "b-open"}">${s}</span>`;
+      }
+      function priBadge(p) {
+        const m = {
+          Critical: "b-critical",
+          High: "b-high",
+          Medium: "b-medium",
+          Low: "b-low",
+        };
+        return `<span class="badge ${m[p] || "b-medium"}">${p}</span>`;
+      }
+
+      // ── Dashboard ──
+      function renderDash() {
+        document.getElementById("s-total").textContent = allTickets.length;
+        document.getElementById("s-open").textContent = allTickets.filter(
+          (t) => t.status === "Open",
+        ).length;
+        document.getElementById("s-resolved").textContent = allTickets.filter(
+          (t) => ["Resolved", "Closed"].includes(t.status),
+        ).length;
+        document.getElementById("s-critical").textContent = allTickets.filter(
+          (t) => t.priority === "Critical",
+        ).length;
+        document.getElementById("dash-table").innerHTML = allTickets
+          .slice(0, 8)
+          .map(
+            (t) => `
+      <tr onclick="openModal(${t.id})">
+        <td class="td-id">#${t.id}</td>
+        <td class="td-title">${t.title}</td>
+        <td>${t.department}</td>
+        <td><span style="font-size:12px;color:var(--text-secondary)">${t.category}</span></td>
+        <td>${priBadge(t.priority)}</td>
+        <td>${statusBadge(t.status)}</td>
+        <td class="td-date">${t.created_at.slice(0, 10)}</td>
+      </tr>`,
+          )
+          .join("");
+      }
+
+      // ── All Tickets ──
+      function renderTable() {
+        const q = (document.getElementById("search").value || "").toLowerCase();
+        const fs = document.getElementById("f-status").value;
+        const fd = document.getElementById("f-dept").value;
+        const filtered = allTickets.filter((t) => {
+          const match =
+            !q ||
+            t.title.toLowerCase().includes(q) ||
+            t.name.toLowerCase().includes(q) ||
+            t.department.toLowerCase().includes(q);
+          return (
+            match && (!fs || t.status === fs) && (!fd || t.department === fd)
+          );
+        });
+        document.getElementById("filter-count").textContent =
+          filtered.length !== allTickets.length
+            ? `${filtered.length} of ${allTickets.length} tickets`
+            : `${allTickets.length} tickets`;
+        document.getElementById("all-table").innerHTML = filtered.length
+          ? filtered
+              .map(
+                (t) => `
+      <tr onclick="openModal(${t.id})">
+        <td class="td-id">#${t.id}</td>
+        <td class="td-title">${t.title}</td>
+        <td>${t.name}</td>
+        <td>${t.department}</td>
+        <td><span style="font-size:12px;color:var(--text-secondary)">${t.category}</span></td>
+        <td>${priBadge(t.priority)}</td>
+        <td>${statusBadge(t.status)}</td>
+      </tr>`,
+              )
+              .join("")
+          : `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No tickets match your filters</td></tr>`;
+      }
+
+      // ── Track ──
+      function renderTrack() {
+        document.getElementById("track-table").innerHTML = allTickets.length
+          ? allTickets
+              .map(
+                (t) => `
+      <tr onclick="openModal(${t.id})">
+        <td class="td-id">#${t.id}</td>
+        <td class="td-title">${t.title}</td>
+        <td>${t.department}</td>
+        <td>${priBadge(t.priority)}</td>
+        <td>${statusBadge(t.status)}</td>
+        <td class="td-date">${t.created_at.slice(0, 10)}</td>
+      </tr>`,
+              )
+              .join("")
+          : `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">No tickets found for your account</td></tr>`;
+      }
+
+      // ── Submit ──
+      async function submitTicket() {
+        const dept = document.getElementById("f-dept-sub").value;
+        const priority = document.getElementById("f-priority").value;
+        const title = document.getElementById("f-title").value.trim();
+        const desc = document.getElementById("f-desc").value.trim();
+        const ok = document.getElementById("sub-ok"),
+          err = document.getElementById("sub-err");
+        ok.style.display = err.style.display = "none";
+        if (!title || !desc) {
+          err.textContent = "Please fill in all fields.";
+          err.style.display = "block";
+          return;
+        }
+        const btn = document.querySelector("#page-submit button.btn-primary");
+        btn.textContent = "Submitting…";
+        btn.disabled = true;
+        const res = await fetch("/tickets", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            department: dept,
+            priority,
+            title,
+            description: desc,
+          }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          ok.textContent = `✅ Ticket #${data.ticket_id} submitted successfully! Assigned to: ${data.ai_summary ? data.ai_summary.slice(0, 60) + "…" : "Support team"}`;
+          ok.style.display = "block";
+          document.getElementById("f-title").value = "";
+          document.getElementById("f-desc").value = "";
+          await loadTickets();
+          addNotification(`New ticket #${data.ticket_id}: ${title}`);
+        } else {
+          err.textContent = data.error || "Something went wrong.";
+          err.style.display = "block";
+        }
+        btn.textContent = "Submit Ticket →";
+        btn.disabled = false;
+      }
+
+      // ── Modal ──
+      function openModal(id) {
+        const t = allTickets.find((x) => x.id === id);
+        currentId = id;
+        document.getElementById("m-title").textContent =
+          `#${t.id} — ${t.title}`;
+        document.getElementById("m-date-sub").textContent =
+          `Submitted ${t.created_at.slice(0, 16).replace("T", " ")}`;
+        document.getElementById("m-name").textContent = t.name;
+        document.getElementById("m-dept").textContent = t.department;
+        document.getElementById("m-desc").textContent = t.description;
+        document.getElementById("m-summary").textContent =
+          t.ai_summary || "AI summary unavailable.";
+        document.getElementById("m-cat").textContent = t.category;
+        document.getElementById("m-team").textContent =
+          t.assigned_team || "General Support";
+        document.getElementById("m-status").value = t.status;
+        document.getElementById("modal").classList.add("open");
+      }
+      function closeModal() {
+        document.getElementById("modal").classList.remove("open");
+      }
+
+      async function saveStatus() {
+        const status = document.getElementById("m-status").value;
+        const res = await fetch(`/tickets/${currentId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status }),
+        });
+        if (!res.ok) {
+          alert("Failed to update status.");
+          return;
+        }
+        closeModal();
+        await loadTickets();
+        addNotification(`Ticket #${currentId} → ${status}`);
+      }
+
+      // ── Charts ──
+      function renderCharts() {
+        if (currentRole !== "admin") return;
+        const deptC = {},
+          priC = {},
+          statC = { Open: 0, Resolved: 0 };
+        allTickets.forEach((t) => {
+          deptC[t.department] = (deptC[t.department] || 0) + 1;
+          priC[t.priority] = (priC[t.priority] || 0) + 1;
+          ["Resolved", "Closed"].includes(t.status)
+            ? statC.Resolved++
+            : statC.Open++;
+        });
+        const COLORS = [
+          "#2563eb",
+          "#10b981",
+          "#f59e0b",
+          "#ef4444",
+          "#8b5cf6",
+          "#06b6d4",
+        ];
+        if (deptChartInstance) deptChartInstance.destroy();
+        if (priorityChartInstance) priorityChartInstance.destroy();
+        if (statusChartInstance) statusChartInstance.destroy();
+        const commonOpts = {
+          plugins: { legend: { display: false } },
+          maintainAspectRatio: false,
+        };
+        deptChartInstance = new Chart(document.getElementById("deptChart"), {
+          type: "bar",
+          options: {
+            ...commonOpts,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { display: false } },
+              y: { grid: { color: "#f1f5f9" }, ticks: { font: { size: 11 } } },
+            },
+          },
+          data: {
+            labels: Object.keys(deptC),
+            datasets: [
+              {
+                label: "Tickets",
+                data: Object.values(deptC),
+                backgroundColor: COLORS,
+                borderRadius: 4,
+                borderSkipped: false,
+              },
+            ],
+          },
+        });
+        priorityChartInstance = new Chart(
+          document.getElementById("priorityChart"),
+          {
+            type: "doughnut",
+            options: {
+              ...commonOpts,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: "bottom",
+                  labels: { font: { size: 11 }, padding: 10 },
+                },
+              },
+            },
+            data: {
+              labels: Object.keys(priC),
+              datasets: [
+                {
+                  data: Object.values(priC),
+                  backgroundColor: ["#ef4444", "#f97316", "#3b82f6", "#10b981"],
+                  borderWidth: 0,
+                  hoverOffset: 4,
+                },
+              ],
+            },
+          },
+        );
+        statusChartInstance = new Chart(
+          document.getElementById("statusChart"),
+          {
+            type: "doughnut",
+            options: {
+              ...commonOpts,
+              plugins: {
+                legend: {
+                  display: true,
+                  position: "bottom",
+                  labels: { font: { size: 11 }, padding: 10 },
+                },
+              },
+            },
+            data: {
+              labels: ["Open", "Resolved"],
+              datasets: [
+                {
+                  data: Object.values(statC),
+                  backgroundColor: ["#f59e0b", "#10b981"],
+                  borderWidth: 0,
+                  hoverOffset: 4,
+                },
+              ],
+            },
+          },
+        );
+      }
+
+      // ── Smart Support Chat ──
+      function appendMsg(role, html) {
+        const box = document.getElementById("chat-box");
+        const isAI = role === "ai";
+        const d = document.createElement("div");
+        d.className = "chat-msg " + (isAI ? "ai-msg" : "user-msg");
+        d.innerHTML = `<div class="msg-avatar">${isAI ? "🤖" : "👤"}</div>
+      <div class="msg-bubble ${isAI ? "ai-bubble" : "user-bubble"}">
+        ${isAI ? "<strong>SmartDesk AI</strong>" : ""}
+        <p>${html}</p></div>`;
+        box.appendChild(d);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function appendTicketMsg(ticketId) {
+        const box = document.getElementById("chat-box");
+        const d = document.createElement("div");
+        d.className = "chat-msg ai-msg";
+        d.innerHTML = `<div class="msg-avatar">🤖</div>
+      <div class="msg-bubble ticket-raised-bubble">
+        <strong>✅ Ticket #${ticketId} raised successfully</strong>
+        A support agent will review your issue shortly. Track it under <em>Track Mine</em>.
+      </div>`;
+        box.appendChild(d);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function showTyping() {
+        const box = document.getElementById("chat-box");
+        const d = document.createElement("div");
+        d.className = "chat-msg ai-msg";
+        d.id = "typing-indicator";
+        d.innerHTML = `<div class="msg-avatar">🤖</div>
+      <div class="msg-bubble ai-bubble"><div class="typing-bubble"><span></span><span></span><span></span></div></div>`;
+        box.appendChild(d);
+        box.scrollTop = box.scrollHeight;
+      }
+      function hideTyping() {
+        const e = document.getElementById("typing-indicator");
+        if (e) e.remove();
+      }
+
+      function setStatusSidebar(icon, text, showBtn) {
+        document.getElementById("chat-status-area").innerHTML =
+          `<div class="chat-status-pill">${icon} <span>${text}</span></div>`;
+        document.getElementById("chat-raise-btn").style.display = showBtn
+          ? "inline-flex"
+          : "none";
+      }
+
+      async function sendSupportMessage(forced) {
+        const input = document.getElementById("chat-input");
+        const message = (forced || input.value).trim();
+        if (!message) return;
+        const btn = document.getElementById("send-btn");
+        btn.disabled = true;
+        input.value = "";
+        document.getElementById("quick-prompts").style.display = "none";
+        appendMsg("user", message);
+        chatConversation.push({ role: "user", content: message });
+        showTyping();
+        try {
+          const res = await fetch("/support-chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message,
+              conversation: chatConversation.slice(0, -1),
+            }),
+          });
+          const data = await res.json();
+          hideTyping();
+          lastSuggestion = {
+            title: data.suggested_title,
+            department: data.suggested_department,
+            priority: data.suggested_priority,
+          };
+          appendMsg("ai", data.reply.replace(/\n/g, "<br>"));
+          chatConversation.push({ role: "assistant", content: data.reply });
+          if (data.ticket_created && data.ticket_id) {
+            appendTicketMsg(data.ticket_id);
+            setStatusSidebar("✅", `Ticket #${data.ticket_id} raised`, false);
+            btn.disabled = true;
+            addNotification(`Ticket #${data.ticket_id} raised via AI Chat`);
+            await loadTickets();
+            return;
+          }
+          if (data.resolved)
+            setStatusSidebar(
+              "✅",
+              "Issue appears resolved. Raise ticket if not.",
+              true,
+            );
+          else if (data.should_raise_ticket)
+            setStatusSidebar("🎫", "AI recommends raising a ticket.", true);
+          else
+            setStatusSidebar(
+              "💬",
+              "Still working on it — keep chatting.",
+              true,
+            );
+        } catch (e) {
+          hideTyping();
+          appendMsg("ai", "Sorry, something went wrong. Please try again.");
+        }
+        btn.disabled = false;
+        input.focus();
+      }
+
+      async function raiseTicketManually() {
+        document.getElementById("send-btn").disabled = true;
+        showTyping();
+        const last = chatConversation
+          .filter((m) => m.role === "user")
+          .slice(-1)[0];
+        try {
+          const res = await fetch("/support-chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: last ? last.content : "Manual ticket request",
+              conversation: chatConversation,
+              force_ticket: true,
+            }),
+          });
+          const data = await res.json();
+          hideTyping();
+          if (data.ticket_id) {
+            appendTicketMsg(data.ticket_id);
+            setStatusSidebar("✅", `Ticket #${data.ticket_id} raised`, false);
+            addNotification(`Ticket #${data.ticket_id} raised via AI Chat`);
+            await loadTickets();
+          }
+        } catch (e) {
+          hideTyping();
+          appendMsg("ai", "Failed to raise ticket. Please try again.");
+          document.getElementById("send-btn").disabled = false;
+        }
+      }
+
+      function resetChat() {
+        chatConversation = [];
+        lastSuggestion = {};
+        document.getElementById("chat-box").innerHTML =
+          `<div class="chat-msg ai-msg">
+      <div class="msg-avatar">🤖</div>
+      <div class="msg-bubble ai-bubble">
+        <strong>SmartDesk AI</strong>
+        <p>Hi! I am your support assistant. Describe what is going wrong and I will try to help you fix it. If I cannot resolve it, I will raise a support ticket automatically.</p>
+      </div></div>`;
+        document.getElementById("ticket-banner").style.display = "none";
+        document.getElementById("quick-prompts").style.display = "flex";
+        document.getElementById("send-btn").disabled = false;
+        setStatusSidebar("💬", "Start chatting to get help", false);
+        document.getElementById("chat-input").focus();
+      }
+
+      function useQuickPrompt(t) {
+        document.getElementById("chat-input").value = t;
+        sendSupportMessage();
+      }
+      function chatKeydown(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendSupportMessage();
+        }
+      }
+
+      // ── Notifications ──
+      function addNotification(msg) {
+        notifications.unshift({
+          text: msg,
+          time: new Date().toLocaleTimeString(),
+        });
+        renderNotifications();
+      }
+      function renderNotifications() {
+        const count = document.getElementById("notif-count");
+        count.textContent = notifications.length || "";
+        count.style.display = notifications.length ? "flex" : "none";
+        document.getElementById("notif-count-label").textContent =
+          notifications.length ? `${notifications.length} new` : "";
+        document.getElementById("notification-list").innerHTML =
+          notifications.length
+            ? notifications
+                .map(
+                  (n) =>
+                    `<div class="notif-item"><div class="notif-text">${n.text}</div><div class="notif-time">${n.time}</div></div>`,
+                )
+                .join("")
+            : '<div class="notif-empty">No notifications yet</div>';
+      }
+      function toggleNotifications() {
+        const p = document.getElementById("notification-panel");
+        p.style.display = p.style.display === "block" ? "none" : "block";
+      }
+
+      // Close notif panel on outside click
+      document.addEventListener("click", (e) => {
+        const panel = document.getElementById("notification-panel");
+        if (
+          panel.style.display === "block" &&
+          !panel.contains(e.target) &&
+          !e.target.closest(".notif-btn")
+        )
+          panel.style.display = "none";
+      });
+
+      // Enter on login fields
+      document.addEventListener("keydown", (e) => {
+        if (
+          e.key === "Enter" &&
+          document.getElementById("login-screen").style.display !== "none"
+        )
+          loginUser();
+      });
+
+      window.onload = checkExistingSession;
+    </script>
+  </body>
+</html>
